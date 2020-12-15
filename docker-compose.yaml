@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+    prediction_proxy:
+        build:
+            context: ./proxy
+        command: python app.py
+        ports:
+            - "5000:5000"
+        links:
+            - belief_service
+
+    belief_service:
+        container_name: belief_service
+        image: prediction_base
+        build:
+          context: ./prediction_base
+        ports:
+          - "5001:5001"
+        environment:
+          - DEBUG=True
+        command: python app.py
+        volumes:
+          - ./data:/app/data
+
+volumes:
+    data: null
